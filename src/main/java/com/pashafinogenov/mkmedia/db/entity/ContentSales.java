@@ -1,4 +1,4 @@
-package com.pashafinogenov.mkmedia.db.model;
+package com.pashafinogenov.mkmedia.db.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
@@ -11,17 +11,21 @@ import java.util.Date;
 @Entity
 @Table(name = "content_sales")
 @Data
-public class ContentSalesModel implements Serializable {
+public class ContentSales implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer contentNameId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id", insertable = false, updatable = false)
+    @Fetch(FetchMode.JOIN)
+    private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "area_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private AreaModel area;
+    private Area area;
 
     private String rights;
     private Boolean isExclusive;
@@ -31,6 +35,6 @@ public class ContentSalesModel implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "corporate_person_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private CorporatePersonModel corporatePerson;
+    private CorporatePerson corporatePerson;
 
 }

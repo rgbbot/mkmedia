@@ -1,4 +1,4 @@
-package com.pashafinogenov.mkmedia.db.model;
+package com.pashafinogenov.mkmedia.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "corporate_person")
 @Data
-public class CorporatePersonModel implements Serializable {
+public class CorporatePerson implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,20 +23,20 @@ public class CorporatePersonModel implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departament_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private DepartmentModel department;
+    private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "position_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private PositionModel position;
+    private Position position;
 
     private String phoneNumber;
     private String email;
 
-    @OneToMany(targetEntity = ContentModel.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Content.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
     @Transient
     @JsonIgnore
-    private List<ContentSalesModel> contentSales;
+    private List<ContentSales> contentSales;
 
 
 

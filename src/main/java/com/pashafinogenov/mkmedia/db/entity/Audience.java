@@ -1,4 +1,4 @@
-package com.pashafinogenov.mkmedia.db.model;
+package com.pashafinogenov.mkmedia.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -10,15 +10,15 @@ import java.util.List;
 @Entity
 @Table(name = "audience")
 @Data
-public class AudienceModel implements Serializable {
+public class Audience implements Serializable {
 
     @Id
     private Integer id;
     private String audienceAge;
 
-    @OneToMany(targetEntity = ContentModel.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Content.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
     @Transient
     @JsonIgnore
-    private List<ContentModel> contentModels;
+    private List<Content> contentModels;
 
 }

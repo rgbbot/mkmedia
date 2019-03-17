@@ -1,4 +1,4 @@
-package com.pashafinogenov.mkmedia.db.model;
+package com.pashafinogenov.mkmedia.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
@@ -10,15 +10,15 @@ import java.util.List;
 @Entity
 @Table(name = "positions")
 @Data
-public class PositionModel implements Serializable {
+public class Position implements Serializable {
 
     @Id
     private Integer id;
     private String positionName;
 
-    @OneToMany(targetEntity = ContentModel.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
+    @OneToMany(targetEntity = Content.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
     @Transient
     @JsonIgnore
-    private List<CorporatePersonModel> corporatePersons;
+    private List<CorporatePerson> corporatePersons;
 
 }

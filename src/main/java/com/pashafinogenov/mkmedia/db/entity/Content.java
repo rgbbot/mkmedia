@@ -1,4 +1,4 @@
-package com.pashafinogenov.mkmedia.db.model;
+package com.pashafinogenov.mkmedia.db.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pashafinogenov.mkmedia.services.Format;
@@ -8,29 +8,30 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "content")
 @Data
-public class ContentModel implements Serializable {
+public class Content implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String contentName;
-    private Integer episosesCount;
+    private Integer episodesCount;
     private Integer episodesDuration;
     private Integer year;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private AudienceModel audience;
+    private Audience audience;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private GenreModel genre;
+    private Genre genre;
 
     private String contentDescription;
 
@@ -40,6 +41,11 @@ public class ContentModel implements Serializable {
 
     @Transient
     @JsonIgnore
-    private Integer isDeleted;
+    private Boolean isDeleted;
+
+    @OneToMany(targetEntity = Content.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
+    @Transient
+    @JsonIgnore
+    private List<ContentSales> contentSales;
 
 }
