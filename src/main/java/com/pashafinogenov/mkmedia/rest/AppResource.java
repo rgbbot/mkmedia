@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AppResource {
 
-    public static final String DELIMITER = " - ";
-    public static final String EMPTY_SPACE = " ";
+    private static final String DELIMITER = " - ";
+    private static final String EMPTY_SPACE = " ";
     private final ContentRepository contentRepository;
     private final ContentSalesRepository contentSalesRepository;
 
