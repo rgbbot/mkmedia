@@ -54,9 +54,9 @@ public class AppResource {
         return new ResponseEntity<>(contentSales, HttpStatus.OK);
     }
 
-    @GetMapping("/api/content_sales")
+    @GetMapping("/api/tops")
     @Transactional
-    public ResponseEntity<List<ContentSalesModel>> getAllSales() {
+    public ResponseEntity<List<ContentSalesModel>> getTops() {
         List<ContentSales> contentSales = contentSalesRepository.findAll();
         return new ResponseEntity<>(this.convertToModel(contentSales), HttpStatus.OK);
     }
