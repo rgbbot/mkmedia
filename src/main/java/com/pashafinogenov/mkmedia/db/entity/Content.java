@@ -22,6 +22,8 @@ public class Content implements Serializable {
     private Integer episodesCount;
     private Integer episodesDuration;
     private Integer year;
+    private String videoLink;
+    private String pictureLink;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id", insertable = false, updatable = false)
@@ -47,5 +49,8 @@ public class Content implements Serializable {
     @Transient
     @JsonIgnore
     private List<ContentSales> contentSales;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "content", fetch = FetchType.LAZY)
+    private List<ContentLanguage> contentLanguages;
 
 }
