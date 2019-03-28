@@ -4,6 +4,7 @@ import com.pashafinogenov.mkmedia.db.entity.Content;
 import com.pashafinogenov.mkmedia.db.entity.ContentSales;
 import com.pashafinogenov.mkmedia.db.repository.ContentRepository;
 import com.pashafinogenov.mkmedia.db.repository.ContentSalesRepository;
+import com.pashafinogenov.mkmedia.model.ContentInfoModel;
 import com.pashafinogenov.mkmedia.model.ContentModel;
 import com.pashafinogenov.mkmedia.model.ContentSalesModel;
 import lombok.RequiredArgsConstructor;
@@ -28,22 +29,36 @@ public class AppResource {
     private final ContentRepository contentRepository;
     private final ContentSalesRepository contentSalesRepository;
 
-    @GetMapping("/api/content/{id}")
+    /**
+     * Content Info.
+     * @param id - content table primary key
+     * @return
+     */
+    @GetMapping("/api/content/{id}") //это для contentInfo да
     @Transactional
-    public ResponseEntity<Content> getContentById(
+    public ResponseEntity<ContentInfoModel> getContentById(
             @PathVariable(value = "id", required = false) Integer id
     ) {
         Content contentModel = contentRepository.findById(id);
-        return new ResponseEntity<>(contentModel, HttpStatus.OK);
+        return new ResponseEntity<>(this.convertContentInfoToModel(contentModel), HttpStatus.OK);
     }
 
-    @GetMapping("/api/content")
+    /**
+     * Content list.
+     * @return
+     */
+    @GetMapping("/api/content") // eto dlya content
     @Transactional
     public ResponseEntity<List<ContentModel>> getAllContentRows() {
         List<Content> contentModelList = contentRepository.findAll();
         return new ResponseEntity<>(this.convertContentToModel(contentModelList), HttpStatus.OK);
     }
 
+    /**
+     * Get content_sales by id. Not used for now.
+     * @param id
+     * @return
+     */
     @GetMapping("/api/content_sales/{id}")
     @Transactional
     public ResponseEntity<ContentSales> getSalesById(
@@ -53,6 +68,10 @@ public class AppResource {
         return new ResponseEntity<>(contentSales, HttpStatus.OK);
     }
 
+    /**
+     * TOPs.
+     * @return
+     */
     @GetMapping("/api/tops")
     @Transactional
     public ResponseEntity<List<ContentSalesModel>> getTops() {
@@ -97,6 +116,16 @@ public class AppResource {
                     contentModel.format = content.getFormat().name();
                     return contentModel;
         }).collect(Collectors.toList());
+    }
+
+       private ContentInfoModel convertContentInfoToModel(Content content) {
+        ContentInfoModel contentInfoModel = new ContentInfoModel();
+        contentInfoModel.id = content.getId();
+        contentInfoModel.videoLink = content.getVideoLink();
+        contentInfoModel.contentName = content.getContentName();
+        contentInfoModel.contentDescription = content.getContentDescription();
+
+        return contentInfoModel;
     }
 
 }
