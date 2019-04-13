@@ -16,7 +16,7 @@ public class Language implements Serializable {
     private Integer id;
     private String language;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "content", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cLanguage", fetch = FetchType.LAZY)
     @Transient
     @JsonIgnore
     private List<ContentLanguage> contentLanguages;

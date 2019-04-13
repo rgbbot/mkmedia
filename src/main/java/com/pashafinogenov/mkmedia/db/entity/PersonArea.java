@@ -8,22 +8,22 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "content_language")
+@Table(name = "person_area")
 @Data
-public class ContentLanguage implements Serializable {
+public class PersonArea implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "content_id", insertable = false, updatable = false)
+    @JoinColumn(name = "corporate_person_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private Content content;
+    private CorporatePerson corporatePerson;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "language_id", insertable = false, updatable = false)
+    @JoinColumn(name = "area_id", insertable = false, updatable = false)
     @Fetch(FetchMode.JOIN)
-    private Language cLanguage;
+    private Area area;
 
 }

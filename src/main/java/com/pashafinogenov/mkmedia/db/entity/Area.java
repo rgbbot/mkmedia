@@ -21,4 +21,8 @@ public class Area implements Serializable {
     @JsonIgnore
     private List<ContentSales> contentSales;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "area", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<PersonArea> personAreas;
+
 }

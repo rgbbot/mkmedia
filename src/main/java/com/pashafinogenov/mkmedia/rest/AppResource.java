@@ -2,11 +2,14 @@ package com.pashafinogenov.mkmedia.rest;
 
 import com.pashafinogenov.mkmedia.db.entity.Content;
 import com.pashafinogenov.mkmedia.db.entity.ContentSales;
+import com.pashafinogenov.mkmedia.db.entity.CorporatePerson;
 import com.pashafinogenov.mkmedia.db.repository.ContentRepository;
 import com.pashafinogenov.mkmedia.db.repository.ContentSalesRepository;
+import com.pashafinogenov.mkmedia.db.repository.CorporatePersonRepository;
 import com.pashafinogenov.mkmedia.model.ContentInfoModel;
 import com.pashafinogenov.mkmedia.model.ContentModel;
 import com.pashafinogenov.mkmedia.model.ContentSalesModel;
+import com.pashafinogenov.mkmedia.model.CorporatePersonModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,34 +32,38 @@ public class AppResource {
     private static final String EMPTY_SPACE = " ";
     private final ContentRepository contentRepository;
     private final ContentSalesRepository contentSalesRepository;
+    private final CorporatePersonRepository corporatePersonRepository;
 
     /**
      * Content Info.
+     *
      * @param id - content table primary key
      * @return
      */
-    @GetMapping("/api/content/{id}") //это для contentInfo да
+    @GetMapping("/api/content/{id}")
     @Transactional
     public ResponseEntity<ContentInfoModel> getContentById(
             @PathVariable(value = "id", required = false) Integer id
     ) {
         Content contentModel = contentRepository.findById(id);
-        return new ResponseEntity<>(this.convertContentInfoToModel(contentModel), HttpStatus.OK);
+        return new ResponseEntity<>(this.toContentInfoModel(contentModel), HttpStatus.OK);
     }
 
     /**
      * Content list.
+     *
      * @return
      */
-    @GetMapping("/api/content") // eto dlya content
+    @GetMapping("/api/content")
     @Transactional
     public ResponseEntity<List<ContentModel>> getAllContentRows() {
         List<Content> contentModelList = contentRepository.findAll();
-        return new ResponseEntity<>(this.convertContentToModel(contentModelList), HttpStatus.OK);
+        return new ResponseEntity<>(this.toContentModel(contentModelList), HttpStatus.OK);
     }
 
     /**
      * Get content_sales by id. Not used for now.
+     *
      * @param id
      * @return
      */
@@ -70,16 +78,30 @@ public class AppResource {
 
     /**
      * TOPs.
+     *
      * @return
      */
     @GetMapping("/api/tops")
     @Transactional
     public ResponseEntity<List<ContentSalesModel>> getTops() {
         List<ContentSales> contentSales = contentSalesRepository.findAll();
-        return new ResponseEntity<>(this.convertContentSalesToModel(contentSales), HttpStatus.OK);
+        return new ResponseEntity<>(this.toContentSalesModel(contentSales), HttpStatus.OK);
     }
 
-    private List<ContentSalesModel> convertContentSalesToModel(List<ContentSales> contentSales) {
+    /**
+     * Corporate people.
+     *
+     * @return
+     */
+    @GetMapping("/api/persons")
+    @Transactional
+    public ResponseEntity<List<CorporatePersonModel>> getPeople() {
+        List<CorporatePerson> corporatePeople = corporatePersonRepository.findAll();
+        return new ResponseEntity<>(this.toCorporatePersonModel(corporatePeople), HttpStatus.OK);
+    }
+
+    private List<ContentSalesModel> toContentSalesModel(List<ContentSales> contentSales) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return contentSales.stream().map(
                 sales -> {
                     ContentSalesModel contentSalesModel = new ContentSalesModel();
@@ -87,8 +109,8 @@ public class AppResource {
                     contentSalesModel.areaName = sales.getArea().getAreaName();
                     contentSalesModel.rights = sales.getRights();
                     contentSalesModel.isExclusive = sales.getIsExclusive();
-                    String dateFrom = sales.getDateFrom().toString();
-                    String dateTo = sales.getDateTo().toString();
+                    String dateFrom = format.format(sales.getDateFrom());
+                    String dateTo = format.format(sales.getDateTo());
                     contentSalesModel.period = dateFrom + DELIMITER + dateTo;
                     contentSalesModel.fullName = sales.getCorporatePerson().getFirstName() + EMPTY_SPACE + sales.getCorporatePerson().getSecondName();
 
@@ -97,7 +119,7 @@ public class AppResource {
         ).collect(Collectors.toList());
     }
 
-    private List<ContentModel> convertContentToModel(List<Content> contents) {
+    private List<ContentModel> toContentModel(List<Content> contents) {
         return contents.stream().map(
                 content -> {
                     ContentModel contentModel = new ContentModel();
@@ -111,14 +133,14 @@ public class AppResource {
                     contentModel.audienceAge = content.getAudience().getAudienceAge();
                     contentModel.episodesLanguage = content.getContentLanguages()
                             .stream()
-                            .map(cl -> cl.getLanguage().getLanguage())
+                            .map(cl -> cl.getCLanguage().getLanguage())
                             .collect(Collectors.toList());
                     contentModel.format = content.getFormat().name();
                     return contentModel;
-        }).collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 
-       private ContentInfoModel convertContentInfoToModel(Content content) {
+    private ContentInfoModel toContentInfoModel(Content content) {
         ContentInfoModel contentInfoModel = new ContentInfoModel();
         contentInfoModel.id = content.getId();
         contentInfoModel.videoLink = content.getVideoLink();
@@ -126,6 +148,24 @@ public class AppResource {
         contentInfoModel.contentDescription = content.getContentDescription();
 
         return contentInfoModel;
+    }
+
+    private List<CorporatePersonModel> toCorporatePersonModel(List<CorporatePerson> corporatePeople) {
+        return corporatePeople.stream().map(
+                corporatePerson -> {
+                    CorporatePersonModel corporatePersonModel = new CorporatePersonModel();
+                    corporatePersonModel.id = corporatePerson.getId();
+                    corporatePersonModel.firstName = corporatePerson.getFirstName();
+                    corporatePersonModel.lastName = corporatePerson.getSecondName();
+                    corporatePersonModel.position = corporatePerson.getPosition().getPositionName();
+                    corporatePersonModel.department = corporatePerson.getDepartment().getDepartmentName();
+                    corporatePersonModel.areas = corporatePerson.getPersonAreas()
+                            .stream().map(personArea -> personArea.getArea().getAreaName())
+                            .collect(Collectors.toList());
+                    corporatePersonModel.phoneNumber = corporatePerson.getPhoneNumber();
+                    corporatePersonModel.email = corporatePerson.getEmail();
+                    return corporatePersonModel;
+                }).collect(Collectors.toList());
     }
 
 }

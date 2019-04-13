@@ -32,12 +32,15 @@ public class CorporatePerson implements Serializable {
 
     private String phoneNumber;
     private String email;
+    private String pictureLink;
+    private Integer hierarchy;
 
     @OneToMany(targetEntity = Content.class, mappedBy = "id", orphanRemoval = false, fetch = FetchType.LAZY)
     @Transient
     @JsonIgnore
     private List<ContentSales> contentSales;
 
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "corporatePerson", fetch = FetchType.LAZY)
+    private List<PersonArea> personAreas;
 
 }
