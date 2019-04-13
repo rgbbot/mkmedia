@@ -15,5 +15,7 @@ public class CorporatePersonModel {
     public List<String> areas;
     public String phoneNumber;
     public String email;
+    private String pictureLink;
+    private Integer hierarchy;
 
 }
