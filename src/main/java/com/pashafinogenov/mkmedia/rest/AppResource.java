@@ -164,6 +164,8 @@ public class AppResource {
                             .collect(Collectors.toList());
                     corporatePersonModel.phoneNumber = corporatePerson.getPhoneNumber();
                     corporatePersonModel.email = corporatePerson.getEmail();
+                    corporatePersonModel.pictureLink = corporatePerson.getPictureLink();
+                    corporatePersonModel.hierarchy = corporatePerson.getHierarchy();
                     return corporatePersonModel;
                 }).collect(Collectors.toList());
     }
