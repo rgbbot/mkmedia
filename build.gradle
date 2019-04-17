@@ -5,7 +5,7 @@ plugins {
 
 apply plugin: 'io.spring.dependency-management'
 
-group = 'com.pashafinogenov'
+group = 'com.dev'
 version = '1.1'
 sourceCompatibility = '11'
 
@@ -27,5 +27,5 @@ configurations {
 }
 
 bootJar {
-    mainClassName = 'com.pashafinogenov.mkmedia.MkmediaApplication'
+    mainClassName = 'com.dev.mkmedia.MkmediaApplication'
 }
